@@ -1,4 +1,3 @@
-```python
 import streamlit as st
 import joblib
 import re
@@ -78,4 +77,3 @@ if st.button("Analyze"):
 
     else:
         st.warning("Please enter an email.")
-```
