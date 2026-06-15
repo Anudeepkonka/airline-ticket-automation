@@ -2,7 +2,7 @@
 
 ## Live Demo
 
-🔗 Streamlit App: [https://YOUR-STREAMLIT-URL.streamlit.app](https://airline-ticket-automation-laqrlqmn6jtlhhfbeoungc.streamlit.app/)
+🔗 Streamlit App: [https://airline-ticket-automation.streamlit.app](https://airline-ticket-automation-laqrlqmn6jtlhhfbeoungc.streamlit.app/)
 
 ## Project Overview
 
