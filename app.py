@@ -1,22 +1,14 @@
-
+```python
 import streamlit as st
 import joblib
-import spacy
 import re
 
 # Load models
 model = joblib.load("intent_model.pkl")
 tfidf = joblib.load("tfidf.pkl")
-try:
-    nlp = spacy.load("en_core_web_sm")
-except:
-    import os
-    os.system("python -m spacy download en_core_web_sm")
-    nlp = spacy.load("en_core_web_sm")
+
 
 def extract_entities(text):
-    doc = nlp(text)
-
     entities = {
         "name": None,
         "source": None,
@@ -24,24 +16,39 @@ def extract_entities(text):
         "travel_date": None
     }
 
-    for ent in doc.ents:
-        if ent.label_ == "PERSON":
-            entities["name"] = ent.text
+    # Name
+    name_match = re.search(r'for\s+(\w+)', text, re.IGNORECASE)
+    if name_match:
+        entities["name"] = name_match.group(1)
 
-        elif ent.label_ == "DATE":
-            entities["travel_date"] = ent.text
+    # Source and Destination
+    route_match = re.search(
+        r'from\s+(\w+)\s+to\s+(\w+)',
+        text,
+        re.IGNORECASE
+    )
 
-    match = re.search(r'from\\s+(\\w+)\\s+to\\s+(\\w+)', text, re.IGNORECASE)
+    if route_match:
+        entities["source"] = route_match.group(1)
+        entities["destination"] = route_match.group(2)
 
-    if match:
-        entities["source"] = match.group(1)
-        entities["destination"] = match.group(2)
+    # Travel Date
+    date_match = re.search(
+        r'(tomorrow|today|next Monday|next Tuesday|next Wednesday|next Thursday|next Friday)',
+        text,
+        re.IGNORECASE
+    )
+
+    if date_match:
+        entities["travel_date"] = date_match.group(1)
 
     return entities
+
 
 st.title("✈️ Airline Ticket Booking Automation System")
 
 email = st.text_area("Paste Customer Email")
+
 
 if st.button("Analyze"):
 
@@ -52,7 +59,7 @@ if st.button("Analyze"):
         intent = model.predict(vector)[0]
 
         confidence = round(
-            max(model.predict_proba(vector)[0]) * 100,
+            float(max(model.predict_proba(vector)[0])) * 100,
             2
         )
 
@@ -71,3 +78,4 @@ if st.button("Analyze"):
 
     else:
         st.warning("Please enter an email.")
+```
