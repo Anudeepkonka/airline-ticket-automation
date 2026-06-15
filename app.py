@@ -7,7 +7,12 @@ import re
 # Load models
 model = joblib.load("intent_model.pkl")
 tfidf = joblib.load("tfidf.pkl")
-nlp = spacy.load("en_core_web_sm")
+try:
+    nlp = spacy.load("en_core_web_sm")
+except:
+    import os
+    os.system("python -m spacy download en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
 
 def extract_entities(text):
     doc = nlp(text)
